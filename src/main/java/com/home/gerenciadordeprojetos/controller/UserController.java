@@ -2,8 +2,11 @@ package com.home.gerenciadordeprojetos.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.home.gerenciadordeprojetos.model.User;
 import com.home.gerenciadordeprojetos.repositories.UserRepository;
+import com.home.gerenciadordeprojetos.service.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +28,7 @@ import lombok.AllArgsConstructor;
 public class UserController {
     
     private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping
     public List<User> listUser(){
@@ -34,8 +37,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody User user){
-        userRepository.save(user);
+    public User addUser(@Valid @RequestBody User user){
+        userService.save(user);
         return user;
     }
 
@@ -47,13 +50,13 @@ public class UserController {
     }
 
     @PutMapping("/{idUser}")
-    public ResponseEntity<User> updateUser(@PathVariable Long idUser, @RequestBody User user){
+    public ResponseEntity<User> updateUser(@Valid @PathVariable Long idUser, @RequestBody User user){
         if(!userRepository.existsById(idUser)){
             return ResponseEntity.notFound().build();
         }
 
         user.setId(idUser);
-        userRepository.save(user);
+        userService.save(user);
         return ResponseEntity.ok().body(user);
     }
 
@@ -64,10 +67,8 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        
-        userRepository.deleteById(idUser);
+        userService.delete(idUser);
         return ResponseEntity.noContent().build();
-        
     }
 
     
