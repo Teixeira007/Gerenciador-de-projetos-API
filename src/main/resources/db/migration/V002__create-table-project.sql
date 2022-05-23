@@ -3,8 +3,8 @@ create table project(
     id bigint not null auto_increment,
     name varchar(60) not null,
     user_id bigint not null,
-    date_initial datetime,
-    data_final datetime,
+    date_init datetime,
+    date_final datetime,
 
     primary key(id)
 
