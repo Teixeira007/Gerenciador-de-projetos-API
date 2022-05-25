@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import lombok.EqualsAndHashCode;
@@ -38,8 +40,9 @@ public class Project {
     @ManyToOne
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    List<Technologies> technologies = new ArrayList<>();
+    List<Technology> technologies = new ArrayList<>();
 
     @ReadOnlyProperty
     private OffsetDateTime dateInit;
@@ -48,4 +51,21 @@ public class Project {
     private OffsetDateTime dateFinal;
 
 
+    public void initProject(){
+        dateInit = OffsetDateTime.now();
+    }
+
+    public void finalProject(){
+        dateFinal = OffsetDateTime.now();
+    }
+
+    public Technology addTechnologies(String nameTechnology){
+        Technology technology = new Technology();
+        technology.setName(nameTechnology);
+        technology.setProject(this);
+
+        this.getTechnologies().add(technology);
+        return technology;
+    }
 }
+ 
