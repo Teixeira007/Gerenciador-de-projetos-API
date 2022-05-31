@@ -30,6 +30,7 @@ public class ProjectController {
     private ProjectRepository projectRepository;
     private ProjectService projectService;
 
+    // Listar
     @GetMapping
     public List<Project> listProject(){
         return projectRepository.findAll();
