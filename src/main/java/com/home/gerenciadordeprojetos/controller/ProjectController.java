@@ -5,7 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.home.gerenciadordeprojetos.model.Project;
+import com.home.gerenciadordeprojetos.model.User;
 import com.home.gerenciadordeprojetos.repositories.ProjectRepository;
+import com.home.gerenciadordeprojetos.repositories.UserRepository;
 import com.home.gerenciadordeprojetos.service.ProjectService;
 
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,6 @@ public class ProjectController {
     private ProjectRepository projectRepository;
     private ProjectService projectService;
 
-    // Listar
     @GetMapping
     public List<Project> listProject(){
         return projectRepository.findAll();
@@ -46,7 +47,6 @@ public class ProjectController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Project> addProject(@Valid @RequestBody Project project){
-        project.initProject();
         
         projectService.save(project);
 
@@ -77,4 +77,39 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
     
+    @GetMapping("/user/{idUser}")
+    public List<Project> listProjectByUser(@PathVariable Long idUser){
+        return projectRepository.findAll().stream()
+        .filter(project -> project.getUser().getId().equals(idUser))
+        .toList();
+    
+    }  
+    
+    @GetMapping("/inicializar/{idProject}")
+    public ResponseEntity<Project> inicializar(@PathVariable Long idProject){
+        if(!projectRepository.existsById(idProject)){
+            return ResponseEntity.notFound().build(); 
+        }else{
+            Project project = projectRepository.findById(idProject).get();
+            
+            project.initProject();
+            projectService.save(project);
+            return ResponseEntity.ok().body(project);
+        }
+    }
+
+    @GetMapping("/finalizar/{idProject}")
+    public ResponseEntity<Project> finalizar(@PathVariable Long idProject){
+        if(!projectRepository.existsById(idProject)){
+            return ResponseEntity.notFound().build(); 
+        }else{
+            Project project = projectRepository.findById(idProject).get();
+           
+            project.finalProject();
+            projectService.save(project);
+            return ResponseEntity.ok().body(project);
+        }
+
+    
+    }
 }

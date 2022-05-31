@@ -9,6 +9,8 @@ import com.home.gerenciadordeprojetos.service.TechnologyService;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,7 @@ public class TechnologyController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Technology> addTechnology(@RequestBody Technology technology, 
+    public ResponseEntity<Technology> addTechnology(@Valid @RequestBody Technology technology, 
             @PathVariable Long idProject){
         
         Technology technologyAdd = technologyService.addTechnology(idProject, technology.getName());

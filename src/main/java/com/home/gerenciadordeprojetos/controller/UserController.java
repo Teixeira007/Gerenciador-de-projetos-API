@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    
+
     private UserRepository userRepository;
     private UserService userService;
 
@@ -71,5 +71,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+   
     
 }

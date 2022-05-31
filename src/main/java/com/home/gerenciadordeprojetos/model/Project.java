@@ -55,8 +55,9 @@ public class Project {
         dateInit = OffsetDateTime.now();
     }
 
-    public void finalProject(){
+    public Project finalProject(){
         dateFinal = OffsetDateTime.now();
+        return this;
     }
 
     public Technology addTechnologies(String nameTechnology){
