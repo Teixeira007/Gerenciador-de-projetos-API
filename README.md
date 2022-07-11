@@ -3,6 +3,8 @@
 
 Gerencia quanto tempo vc passa em um projeto, quais tecnologias utilizou e outras funcionalidades.
 
+Repositório do front-end https://github.com/Teixeira007/Gerenciador-de-projetos
+
 ## Tecnologias
 
 Este projeto foi desenvolvido com as seguintes Tecnologias
