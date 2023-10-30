@@ -13,11 +13,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class UserService {
-    
+
     private UserRepository userRepository;
 
     @Transactional
-    public void save(User user){
+    public User save(User user){
         boolean usedEmail = userRepository.findByEmail(user.getEmail())
         .stream()
         .anyMatch(userExistente -> !userExistente.equals(user));
@@ -26,6 +26,7 @@ public class UserService {
             throw new NegocioException("Esse email já está sendo usado");
         }
         userRepository.save(user);
+        return user;
     }
 
     @Transactional

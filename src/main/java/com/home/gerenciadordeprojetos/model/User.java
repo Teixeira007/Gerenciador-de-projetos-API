@@ -8,12 +8,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class User {
@@ -32,6 +32,8 @@ public class User {
     @Size(max = 255)
     private String email;
 
-    
-    
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }

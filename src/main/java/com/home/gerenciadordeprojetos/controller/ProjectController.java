@@ -1,6 +1,8 @@
 package com.home.gerenciadordeprojetos.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -45,57 +47,63 @@ public class ProjectController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Project> addProject(@Valid @RequestBody Project project){
         
         projectService.save(project);
 
-
-        return ResponseEntity.ok().body(project);
+        return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }
 
     @PutMapping("/{idProject}")
     public ResponseEntity<Project> update(@Valid @PathVariable Long idProject,
              @RequestBody Project project){
-            
-        if(!projectRepository.existsById(idProject)){
+
+        Optional<Project> project1 = projectRepository.findById(idProject);
+
+        if(project1.isPresent()){
+            project.setId(idProject);
+            projectService.save(project);
+            return ResponseEntity.ok().body(project);
+        }else{
             return ResponseEntity.notFound().build();
         }
 
-        project.setId(idProject);
-        projectService.save(project);
-        return ResponseEntity.ok().body(project);
     }
 
     @DeleteMapping("/{idProject}")
-    public ResponseEntity<Project> delete(@PathVariable Long idProject){
-        if(!projectRepository.existsById(idProject)){
+    public ResponseEntity<Void> delete(@PathVariable Long idProject){
+        Optional<Project> project1 = projectRepository.findById(idProject);
+
+        if(project1.isPresent()) {
+            projectRepository.deleteById(idProject);
+            return ResponseEntity.noContent().build();
+        }else{
             return ResponseEntity.notFound().build();
         }
         
-        projectService.delete(idProject);
-        return ResponseEntity.noContent().build();
+
     }
     
     @GetMapping("/user/{idUser}")
     public List<Project> listProjectByUser(@PathVariable Long idUser){
         return projectRepository.findAll().stream()
-        .filter(project -> project.getUser().getId().equals(idUser))
-        .toList();
-    
+        .filter(project -> project.getUser().getId().equals(idUser)).collect(Collectors.toList());
     }  
     
     @GetMapping("/inicializar/{idProject}")
     public ResponseEntity<Project> inicializar(@PathVariable Long idProject){
-        if(!projectRepository.existsById(idProject)){
-            return ResponseEntity.notFound().build(); 
+        Optional<Project> project = projectRepository.findById(idProject);
+
+
+        if(project.isPresent()) {
+            project.get().initProject();
+            projectService.save(project.get());
+            return ResponseEntity.ok().body(project.get());
         }else{
-            Project project = projectRepository.findById(idProject).get();
-            
-            project.initProject();
-            projectService.save(project);
-            return ResponseEntity.ok().body(project);
+            return ResponseEntity.notFound().build();
         }
+
+
     }
 
     @GetMapping("/finalizar/{idProject}")

@@ -1,9 +1,11 @@
 package com.home.gerenciadordeprojetos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.home.gerenciadordeprojetos.exception.UserNotFoundException;
 import com.home.gerenciadordeprojetos.model.User;
 import com.home.gerenciadordeprojetos.repositories.UserRepository;
 import com.home.gerenciadordeprojetos.service.UserService;
@@ -36,10 +38,9 @@ public class UserController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@Valid @RequestBody User user){
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
         userService.save(user);
-        return user;
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @GetMapping("/{idUser}")
@@ -51,13 +52,16 @@ public class UserController {
 
     @PutMapping("/{idUser}")
     public ResponseEntity<User> updateUser(@Valid @PathVariable Long idUser, @RequestBody User user){
-        if(!userRepository.existsById(idUser)){
+
+        Optional<User> user1 = userRepository.findById(idUser);
+        if(user1.isPresent()){
+            user.setId(user1.get().getId());
+            userService.save(user);
+            return ResponseEntity.ok().body(user);
+        }else{
             return ResponseEntity.notFound().build();
         }
 
-        user.setId(idUser);
-        userService.save(user);
-        return ResponseEntity.ok().body(user);
     }
 
     @DeleteMapping("/{idUser}")

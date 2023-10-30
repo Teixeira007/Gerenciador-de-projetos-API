@@ -16,16 +16,15 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Project {
     
     @EqualsAndHashCode.Include
@@ -67,6 +66,12 @@ public class Project {
 
         this.getTechnologies().add(technology);
         return technology;
+    }
+
+    public Project(Long id, String name, User user) {
+        this.id = id;
+        this.name = name;
+        this.user = user;
     }
 }
  
